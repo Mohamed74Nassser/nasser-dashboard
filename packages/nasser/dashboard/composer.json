@@ -1,0 +1,29 @@
+{
+    "name": "nasser/dashboard",
+    "description": "Nasser Dashboard - Reusable Laravel Blade admin dashboard package",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohamed Nasser",
+            "email": "nasser.nasser1909@gmale.com",
+            "phone": "+201032404246"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "illuminate/support": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nasser\\Dashboard\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nasser\\Dashboard\\Providers\\DashboardServiceProvider"
+            ]
+        }
+    }
+} 
