@@ -21,7 +21,7 @@ Reusable Laravel Blade admin dashboard package.
    "repositories": [
      {
        "type": "vcs",
-       "url": "https://github.com/USERNAME/nasser-dashboard"
+       "url": "https://github.com/Mohamed74Nassser/nasser-dashboard"
      }
    ]
    ```
