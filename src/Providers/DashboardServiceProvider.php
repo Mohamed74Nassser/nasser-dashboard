@@ -18,8 +18,8 @@ class DashboardServiceProvider extends ServiceProvider
 
         // Publish views
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/nasser-dashboard'),
-        ], 'nasser-dashboard-views');
+            __DIR__.'/../public/assets' => public_path('vendor/nasser-dashboard/assets'),
+        ], 'nasser-dashboard-assets');
     }
 
     public function register()
