@@ -100,7 +100,6 @@
                             </div>
                             
                             <!-- Pagination Component -->
-                            <x-pagination :paginator="$subCategories" label="subcategories" />
 
                         </div>
                     </div>

@@ -60,7 +60,6 @@
                                 </div>
                                 
                                 <!-- Pagination Component -->
-                                <x-pagination :paginator="$orders" label="paid orders" />
 
                             @else
                                 <div class="text-center py-4">
