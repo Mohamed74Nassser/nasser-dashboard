@@ -39,8 +39,8 @@ composer require nasser/dashboard
 ## Publish assets and views
 
 ```bash
-php artisan vendor:publish --provider="Nasser\\Dashboard\\Providers\\DashboardServiceProvider" --tag=nasser-dashboard-assets
-php artisan vendor:publish --provider="Nasser\\Dashboard\\Providers\\DashboardServiceProvider" --tag=nasser-dashboard-views
+php artisan vendor:publish --tag=nasser-dashboard-assets
+php artisan vendor:publish --tag=nasser-dashboard-views
 ```
 
 ## Usage
