@@ -6,12 +6,11 @@
   "authors": [
     {
       "name": "Nasser",
-        "email": "nasser.nasser1909@gmail.com",
-        "phone": "+201032404246"
+      "email": "you@example.com"
     }
   ],
   "require": {
-    "php": ">=7.4",
+    "php": "^8.0",
     "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
   },
   "autoload": {
