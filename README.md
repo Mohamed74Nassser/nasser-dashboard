@@ -8,6 +8,13 @@ Reusable Laravel Blade admin dashboard package.
 - Includes all required CSS, JS, and image assets
 - Easy integration with any Laravel project
 
+## 📸 Dashboard Preview
+
+Here are some screenshots of the Nasser Dashboard in action:
+<img width="1895" height="907" alt="image" src="https://github.com/user-attachments/assets/c2a86393-03a6-4425-aa37-8ceb9477bb0f" />
+<img width="1919" height="908" alt="image" src="https://github.com/user-attachments/assets/97af6be4-38f3-41ac-9b82-c97827bf0756" />
+<img width="1919" height="904" alt="image" src="https://github.com/user-attachments/assets/6d5a0213-211c-4359-880e-732d0cfe27b1" />
+
 ## Requirements
 - Laravel 8.x or higher
 - PHP 7.4 or higher
