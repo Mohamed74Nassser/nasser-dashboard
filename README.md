@@ -14,6 +14,14 @@ Here are some screenshots of the Nasser Dashboard in action:
 <img width="1895" height="907" alt="image" src="https://github.com/user-attachments/assets/c2a86393-03a6-4425-aa37-8ceb9477bb0f" />
 <img width="1919" height="908" alt="image" src="https://github.com/user-attachments/assets/97af6be4-38f3-41ac-9b82-c97827bf0756" />
 <img width="1919" height="904" alt="image" src="https://github.com/user-attachments/assets/6d5a0213-211c-4359-880e-732d0cfe27b1" />
+<img width="1919" height="908" alt="image" src="https://github.com/user-attachments/assets/5c9d3c55-ebeb-4eea-96dc-7f5a1a354dff" />
+<img width="1919" height="911" alt="image" src="https://github.com/user-attachments/assets/74fb182e-d7d1-4d97-a9cb-7771ecd493ed" />
+<img width="1896" height="913" alt="image" src="https://github.com/user-attachments/assets/e2a45ef9-4f53-46f8-a78c-470efc885bc3" />
+<img width="1898" height="904" alt="image" src="https://github.com/user-attachments/assets/726803d8-f663-4132-ba4a-c6e99f4f0470" />
+<img width="1896" height="909" alt="image" src="https://github.com/user-attachments/assets/432cc132-235f-453f-b295-bc5f522f3140" />
+<img width="1895" height="906" alt="image" src="https://github.com/user-attachments/assets/c70d4a90-b51a-4bef-954a-d1a51dbc939e" />
+<img width="1917" height="909" alt="image" src="https://github.com/user-attachments/assets/fef26cb4-b037-44c3-8099-b5b716a22f83" />
+<img width="1898" height="907" alt="image" src="https://github.com/user-attachments/assets/9db2998a-6538-4f9a-86d3-8aedda03dcb5" />
 
 ## Requirements
 - Laravel 8.x or higher
