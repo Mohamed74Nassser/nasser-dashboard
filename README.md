@@ -25,16 +25,11 @@ Reusable Laravel Blade admin dashboard package.
      }
    ]
    ```
+
 2. Require the package:
    ```bash
    composer require nasser/dashboard:dev-main
    ```
-
-### If published on Packagist:
-
-```bash
-composer require nasser/dashboard
-```
 
 ## Publish assets and views
 
@@ -47,9 +42,109 @@ php artisan vendor:publish --tag=nasser-dashboard-views
 
 In your Blade files:
 ```blade
-@extends('nasser-dashboard::layouts.app')
+@extends('nasser-dashboard::layouts.master')
 ```
 Or copy/edit the published views in `resources/views/vendor/nasser-dashboard` as needed.
+
+## Routing Setup
+
+To fully enable the dashboard views and pages, you can add the following routes to your `routes/web.php` file:
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+// Nasser Dashboard Routes
+Route::prefix('dashboard')->group(function () {
+    // Dashboard Home
+    Route::get('/', function () {
+        return view('nasser-dashboard::admin.dashboard');
+    })->name('dashboard');
+
+    // Products Routes
+    Route::get('/products/all', function () {
+        return view('nasser-dashboard::admin.products.all');
+    })->name('dashboard.products.all');
+
+    Route::get('/products/pending', function () {
+        return view('nasser-dashboard::admin.products.pending');
+    })->name('dashboard.products.pending');
+
+    Route::get('/products/approved', function () {
+        return view('nasser-dashboard::admin.products.approved');
+    })->name('dashboard.products.approved');
+
+    Route::get('/products/rejected', function () {
+        return view('nasser-dashboard::admin.products.rejected');
+    })->name('dashboard.products.rejected');
+
+    Route::get('/products/show', function () {
+        return view('nasser-dashboard::admin.products.show');
+    })->name('dashboard.products.show');
+
+    // Orders Routes
+    Route::get('/orders/pending', function () {
+        return view('nasser-dashboard::admin.orders.pending');
+    })->name('dashboard.orders.pending');
+
+    Route::get('/orders/paid', function () {
+        return view('nasser-dashboard::admin.orders.paid');
+    })->name('dashboard.orders.paid');
+
+    Route::get('/orders/show', function () {
+        return view('nasser-dashboard::admin.orders.show');
+    })->name('dashboard.orders.show');
+
+    Route::get('/orders/details', function () {
+        return view('nasser-dashboard::admin.orders.details');
+    })->name('dashboard.orders.details');
+
+    // Categories Routes
+    Route::get('/categories', function () {
+        return view('nasser-dashboard::admin.categories.index');
+    })->name('dashboard.categories');
+
+    Route::get('/categories/subcategories', function () {
+        return view('nasser-dashboard::admin.categories.subcategories');
+    })->name('dashboard.categories.subcategories');
+
+    // New Advanced Dashboard Pages
+    Route::get('/analytics', function () {
+        return view('nasser-dashboard::admin.analytics');
+    })->name('dashboard.analytics');
+
+    Route::get('/users', function () {
+        return view('nasser-dashboard::admin.users');
+    })->name('dashboard.users');
+
+    Route::get('/notifications', function () {
+        return view('nasser-dashboard::admin.notifications');
+    })->name('dashboard.notifications');
+
+    Route::get('/help', function () {
+        return view('nasser-dashboard::admin.help');
+    })->name('dashboard.help');
+
+    Route::get('/reports', function () {
+        return view('nasser-dashboard::admin.reports');
+    })->name('dashboard.reports');
+
+    Route::get('/settings', function () {
+        return view('nasser-dashboard::admin.settings');
+    })->name('dashboard.settings');
+
+    Route::get('/advanced-settings', function () {
+        return view('nasser-dashboard::admin.advanced-settings');
+    })->name('dashboard.advanced-settings');
+});
+```
+
+Once added, you can access the dashboard at:
+
+```
+http://your-domain.com/dashboard
+```
 
 ## Quick Test
 
