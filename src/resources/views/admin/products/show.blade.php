@@ -1,11 +1,81 @@
-@extends('layouts.master')
+@extends('nasser-dashboard::layouts.master')
 
 @section('title', 'Product Details - Admin Dashboard')
 
 @section('content')
+@php
+// Static data for demonstration
+$product = (object) [
+    'id' => 1,
+    'title' => 'iPhone 14 Pro Max',
+    'description' => 'Latest iPhone with advanced camera system and A16 Bionic chip. Features include:\n\n• 6.7-inch Super Retina XDR display\n• A16 Bionic chip with 6-core GPU\n• 48MP Main camera with 2x Telephoto\n• Cinematic mode up to 4K HDR\n• Action mode for smooth, steady videos\n• Crash Detection\n• Emergency SOS via satellite\n• All-day battery life',
+    'price' => 1299.99,
+    'status' => 'approved',
+    'brand' => 'Apple',
+    'is_auction' => false,
+    'is_customizable' => true,
+    'base_price' => 1299.99,
+    'created_at' => now()->subDays(5),
+    'updated_at' => now()->subDays(2),
+    'user' => (object) [
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'phone' => '+1 (555) 123-4567'
+    ],
+    'category' => (object) [
+        'name' => 'Electronics',
+        'description' => 'Electronic devices and gadgets'
+    ],
+    'getMedia' => function() { return collect(); },
+    'availabilities' => collect([
+        (object) [
+            'id' => 1,
+            'grade' => (object) ['name' => 'Grade 1'],
+            'price' => 1299.99,
+            'is_active' => true
+        ],
+        (object) [
+            'id' => 2,
+            'grade' => (object) ['name' => 'Grade 2'],
+            'price' => 1199.99,
+            'is_active' => true
+        ]
+    ]),
+    'customizationOptions' => collect([
+        (object) [
+            'id' => 1,
+            'name' => 'Storage',
+            'options' => collect([
+                (object) ['name' => '128GB', 'price_adjustment' => 0],
+                (object) ['name' => '256GB', 'price_adjustment' => 100],
+                (object) ['name' => '512GB', 'price_adjustment' => 300]
+            ])
+        ],
+        (object) [
+            'id' => 2,
+            'name' => 'Color',
+            'options' => collect([
+                (object) ['name' => 'Space Black', 'price_adjustment' => 0],
+                (object) ['name' => 'Silver', 'price_adjustment' => 0],
+                (object) ['name' => 'Gold', 'price_adjustment' => 0],
+                (object) ['name' => 'Deep Purple', 'price_adjustment' => 0]
+            ])
+        ]
+    ])
+];
+@endphp
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
+            <!-- Back Button -->
+            <div class="mb-3">
+                <a href="#" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Products
+                </a>
+            </div>
+
+            <!-- Product Details Card -->
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
@@ -13,7 +83,7 @@
                             <i class="bi bi-box me-2"></i>
                             Product Details
                         </h3>
-                        <div>
+                        <div class="card-tools">
                             @if($product->status === 'pending')
                                 <span class="badge bg-warning">Pending Review</span>
                             @elseif($product->status === 'approved')
@@ -25,231 +95,70 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible mb-4">
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            <i class="bi bi-check-circle me-2"></i>
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible mb-4">
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
                     <div class="row">
                         <!-- Product Images -->
-                        <div class="col-md-6">
-                            <div class="product-images">
-                                @if($product->getMedia('product_images')->count() > 0)
-                                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                                        <div class="carousel-inner">
-                                            @foreach($product->getMedia('product_images') as $index => $media)
-                                                @php
-                                                    $imageUrl = asset('storage/' . $media->getPathRelativeToRoot());
-                                                @endphp
-                                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                                    <img src="{{ $imageUrl }}" 
-                                                         class="d-block w-100 rounded" 
-                                                         alt="Product Image {{ $index + 1 }}"
-                                                         style="max-height: 400px; object-fit: cover;">
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                        @if($product->getMedia('product_images')->count() > 1)
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon"></span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon"></span>
-                                            </button>
-                                        @endif
-                                    </div>
-                                @else
-                                    <div class="text-center py-5 bg-light rounded">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                     style="width: 300px; height: 300px; margin: 0 auto;">
                                         <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
-                                        <p class="text-muted mt-2">No images available</p>
                                     </div>
-                                @endif
+                                <p class="text-muted mt-2">Product Images</p>
                             </div>
                         </div>
 
                         <!-- Product Information -->
-                        <div class="col-md-6">
-                            <div class="product-info">
-                                <h2 class="mb-3">{{ $product->title }}</h2>
+                        <div class="col-md-8">
+                            <h4>{{ $product->title }}</h4>
+                            <p class="text-muted mb-3">Posted by {{ $product->user->name }} on {{ $product->created_at->format('M d, Y') }}</p>
                                 
                                 <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Price:</strong>
+                                <div class="col-md-6">
+                                    <strong>Category:</strong> {{ $product->category->name }}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Brand:</strong> {{ $product->brand ?? 'N/A' }}
                                     </div>
-                                    <div class="col-sm-8">
-                                        @if($product->is_auction)
-                                            <span class="text-warning">
-                                                <i class="bi bi-gavel me-1"></i>
-                                                Auction Item
-                                            </span>
-                                            @if($product->auction)
-                                                <br>
-                                                <strong>Base Price: ${{ number_format($product->auction->base_price, 2) }}</strong>
-                                            @endif
+                                </div>
+
+                                <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <strong>Base Price:</strong> ${{ number_format($product->base_price, 2) }}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Customizable:</strong> 
+                                    @if($product->is_customizable)
+                                        <span class="badge bg-success">Yes</span>
                                         @else
-                                            <strong class="text-success">${{ number_format($product->price, 2) }}</strong>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Category:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <span class="badge bg-info">{{ $product->category->name }}</span>
-                                    </div>
-                                </div>
-
-                                @if($product->brand)
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Brand:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        {{ $product->brand }}
-                                    </div>
-                                </div>
+                                        <span class="badge bg-secondary">No</span>
                                 @endif
-
-                                @if($product->color)
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Color:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        {{ $product->color->name }}
-                                    </div>
-                                </div>
-                                @endif
-
-                                @if($product->condition)
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Condition:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        {{ $product->condition->name }}
-                                    </div>
-                                </div>
-                                @endif
-
-                                @if($product->material)
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Material:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        {{ $product->material->name }}
-                                    </div>
-                                </div>
-                                @endif
-
-                                @if($product->dimensions)
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Dimensions:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        @if(isset($product->dimensions['height']))
-                                            Height: {{ $product->dimensions['height'] }}cm<br>
-                                        @endif
-                                        @if(isset($product->dimensions['width']))
-                                            Width: {{ $product->dimensions['width'] }}cm<br>
-                                        @endif
-                                        @if(isset($product->dimensions['length']))
-                                            Length: {{ $product->dimensions['length'] }}cm<br>
-                                        @endif
-                                        @if(isset($product->dimensions['weight']))
-                                            Weight: {{ $product->dimensions['weight'] }}kg
-                                        @endif
-                                    </div>
-                                </div>
-                                @endif
-
-                                @if($product->available_until)
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Available Until:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        @if($product->available_until instanceof \Carbon\Carbon)
-                                            {{ $product->available_until->format('M d, Y H:i') }}
-                                        @else
-                                            {{ $product->available_until }}
-                                        @endif
-                                    </div>
-                                </div>
-                                @endif
-
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Posted:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        {{ $product->created_at->format('M d, Y H:i') }}
-                                        <br>
-                                        <small class="text-muted">{{ $product->created_at->diffForHumans() }}</small>
-                                    </div>
-                                </div>
-
-                                @if($product->rejection_reason)
-                                <div class="row mb-3">
-                                    <div class="col-sm-4">
-                                        <strong>Rejection Reason:</strong>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <div class="alert alert-danger">
-                                            {{ $product->rejection_reason }}
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
                         </div>
                     </div>
 
-                    <!-- Description -->
-                    @if($product->description)
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <h4>Description</h4>
-                            <div class="card">
-                                <div class="card-body">
-                                    {{ $product->description }}
+                            <div class="mb-3">
+                                <strong>Description:</strong>
+                                <div class="mt-2 p-3 bg-light rounded">
+                                    {!! nl2br(e($product->description)) !!}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    @endif
 
                     <!-- Seller Information -->
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <h4>Seller Information</h4>
-                            <div class="card">
+                            <div class="card bg-light">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>Seller Information</h6>
+                                </div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <strong>Name:</strong> {{ $product->user->name }}<br>
-                                            <strong>Email:</strong> {{ $product->user->email }}<br>
-                                            <strong>Phone:</strong> {{ $product->user->phone ?? 'Not provided' }}
+                                            <strong>Name:</strong> {{ $product->user->name }}
                                         </div>
                                         <div class="col-md-6">
-                                            <strong>Member Since:</strong> {{ $product->user->created_at->format('M d, Y') }}<br>
-                                            <strong>Total Products:</strong> {{ $product->user->products->count() }}<br>
-                                            <strong>Approved Products:</strong> {{ $product->user->products->where('status', 'approved')->count() }}
+                                            <strong>Email:</strong> {{ $product->user->email }}
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-6">
+                                            <strong>Phone:</strong> {{ $product->user->phone }}
                                         </div>
                                     </div>
                                 </div>
@@ -257,42 +166,89 @@
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
-                    @if($product->status === 'pending')
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="d-flex gap-2">
-                                <button type="button" 
-                                        class="btn btn-success btn-lg" 
-                                        onclick="approveProduct({{ $product->id }})">
-                                    <i class="bi bi-check-lg me-2"></i>
-                                    Approve Product
-                                </button>
-                                <button type="button" 
-                                        class="btn btn-danger btn-lg" 
-                                        onclick="showRejectModal({{ $product->id }})">
-                                    <i class="bi bi-x-lg me-2"></i>
-                                    Reject Product
-                                </button>
-                                <a href="{{ route('admin.products.pending') }}" 
-                                   class="btn btn-secondary btn-lg">
-                                    <i class="bi bi-arrow-left me-2"></i>
-                                    Back to Pending
-                                </a>
+                    <!-- Product Availability by Grade -->
+                    @if($product->availabilities->count() > 0)
+                        <div class="mt-4">
+                            <h5><i class="bi bi-list-check me-2"></i>Availability by Grade</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Grade</th>
+                                            <th>Price</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($product->availabilities as $availability)
+                                            <tr>
+                                                <td>{{ $availability->grade->name }}</td>
+                                                <td>${{ number_format($availability->price, 2) }}</td>
+                                                <td>
+                                                    @if($availability->is_active)
+                                                        <span class="badge bg-success">Active</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Inactive</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                    @else
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <a href="{{ route('admin.products.pending') }}" 
-                               class="btn btn-secondary btn-lg">
-                                <i class="bi bi-arrow-left me-2"></i>
-                                Back to Pending
-                            </a>
-                        </div>
-                    </div>
                     @endif
+
+                    <!-- Customization Options -->
+                    @if($product->customizationOptions->count() > 0)
+                        <div class="mt-4">
+                            <h5><i class="bi bi-gear me-2"></i>Customization Options</h5>
+                            @foreach($product->customizationOptions as $option)
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">{{ $option->name }}</h6>
+                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            @foreach($option->options as $opt)
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="border rounded p-2 text-center">
+                                                        <strong>{{ $opt->name }}</strong>
+                                                        @if($opt->price_adjustment > 0)
+                                                            <br><small class="text-success">+${{ number_format($opt->price_adjustment, 2) }}</small>
+                                                        @elseif($opt->price_adjustment < 0)
+                                                            <br><small class="text-danger">${{ number_format($opt->price_adjustment, 2) }}</small>
+                    @else
+                                                            <br><small class="text-muted">No additional cost</small>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <!-- Action Buttons -->
+                    <div class="mt-4 text-center">
+                        @if($product->status === 'pending')
+                            <button type="button" class="btn btn-success me-2" onclick="approveProduct({{ $product->id }})">
+                                <i class="bi bi-check-lg me-2"></i>Approve Product
+                            </button>
+                            <button type="button" class="btn btn-danger me-2" onclick="showRejectModal({{ $product->id }})">
+                                <i class="bi bi-x-lg me-2"></i>Reject Product
+                            </button>
+                        @elseif($product->status === 'rejected')
+                            <button type="button" class="btn btn-success me-2" onclick="approveProduct({{ $product->id }})">
+                                <i class="bi bi-check-lg me-2"></i>Approve Product
+                            </button>
+                        @endif
+                        <button type="button" class="btn btn-primary" onclick="editProduct({{ $product->id }})">
+                            <i class="bi bi-pencil me-2"></i>Edit Product
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -307,8 +263,7 @@
                 <h5 class="modal-title">Reject Product</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form id="rejectForm" method="POST">
-                @csrf
+            <form id="rejectForm">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="rejection_reason" class="form-label">Rejection Reason</label>
@@ -325,36 +280,22 @@
     </div>
 </div>
 
-@endsection
-
 <script>
 function approveProduct(productId) {
+    console.log('Approve function called for product:', productId);
+    
     if (confirm('Are you sure you want to approve this product?')) {
-        // Disable the button to prevent double-clicking
-        const button = event.target.closest('button');
-        const originalText = button.innerHTML;
-        button.disabled = true;
-        button.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
-        
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `{{ url('admin/products') }}/${productId}/approve`;
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = '{{ csrf_token() }}';
-        
-        form.appendChild(csrfToken);
-        document.body.appendChild(form);
-        form.submit();
+        console.log('User confirmed approval');
+        alert('Product approved successfully! (Demo mode)');
+    } else {
+        console.log('User cancelled approval');
     }
 }
 
 function showRejectModal(productId) {
+    console.log('Reject modal function called for product:', productId);
+    
     const modal = new bootstrap.Modal(document.getElementById('rejectModal'));
-    const form = document.getElementById('rejectForm');
-    form.action = `{{ url('admin/products') }}/${productId}/reject`;
     
     // Clear previous form data
     document.getElementById('rejection_reason').value = '';
@@ -362,14 +303,25 @@ function showRejectModal(productId) {
     modal.show();
 }
 
-// Auto-hide alerts after 5 seconds
-document.addEventListener('DOMContentLoaded', function() {
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function(alert) {
-        setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        }, 5000);
-    });
+function editProduct(productId) {
+    console.log('Edit function called for product:', productId);
+    alert('Edit product functionality (Demo mode)');
+}
+
+// Handle reject form
+document.getElementById('rejectForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const reason = document.getElementById('rejection_reason').value;
+    console.log('Reject product with reason:', reason);
+    alert('Product rejected successfully! (Demo mode)');
+    
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('rejectModal'));
+    modal.hide();
+    
+    // Reset form
+    this.reset();
 });
 </script> 
+
+@endsection 

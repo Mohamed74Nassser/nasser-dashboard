@@ -33,12 +33,9 @@
 
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                         <!-- Authentication -->
-                        <form method="POST" action="">
-                            @csrf
-                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                {{ __('Log Out') }}
-                            </button>
-                        </form>
+                        <a href="#" onclick="event.preventDefault(); alert('Logout functionality (Demo mode)');" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            {{ __('Log Out') }}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -72,12 +69,9 @@
 
             <div class="mt-3 space-y-1">
                 <!-- Authentication -->
-                <form method="POST" action="">
-                    @csrf
-                    <button type="submit" class="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
-                        {{ __('Log Out') }}
-                    </button>
-                </form>
+                <a href="#" onclick="event.preventDefault(); alert('Logout functionality (Demo mode)');" class="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out">
+                    {{ __('Log Out') }}
+                </a>
             </div>
         </div>
     </div>

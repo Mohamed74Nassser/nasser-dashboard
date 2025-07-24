@@ -1,8 +1,53 @@
-@extends('layouts.master')
+@extends('nasser-dashboard::layouts.master')
 
 @section('title', 'Approved Products - Admin Dashboard')
 
 @section('content')
+@php
+// Static data for demonstration
+$products = collect([
+    (object) [
+        'id' => 1,
+        'title' => 'iPhone 14 Pro Max',
+        'description' => 'Latest iPhone with advanced camera system and A16 Bionic chip',
+        'price' => 1299.99,
+        'status' => 'approved',
+        'brand' => 'Apple',
+        'is_auction' => false,
+        'created_at' => now()->subDays(5),
+        'user' => (object) ['name' => 'John Doe', 'email' => 'john@example.com'],
+        'category' => (object) ['name' => 'Electronics'],
+        'getMedia' => function() { return collect(); }
+    ],
+    (object) [
+        'id' => 2,
+        'title' => 'MacBook Pro 16" M2',
+        'description' => 'Professional laptop with M2 Pro chip and Liquid Retina XDR display',
+        'price' => 2499.99,
+        'status' => 'approved',
+        'brand' => 'Apple',
+        'is_auction' => false,
+        'created_at' => now()->subDays(10),
+        'user' => (object) ['name' => 'Mike Johnson', 'email' => 'mike@example.com'],
+        'category' => (object) ['name' => 'Computers'],
+        'getMedia' => function() { return collect(); }
+    ],
+    (object) [
+        'id' => 3,
+        'title' => 'Sony WH-1000XM4 Headphones',
+        'description' => 'Premium noise-cancelling wireless headphones',
+        'price' => 349.99,
+        'status' => 'approved',
+        'brand' => 'Sony',
+        'is_auction' => false,
+        'created_at' => now()->subDays(3),
+        'user' => (object) ['name' => 'Alice Johnson', 'email' => 'alice@example.com'],
+        'category' => (object) ['name' => 'Electronics'],
+        'getMedia' => function() { return collect(); }
+    ]
+]);
+@endphp
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -13,7 +58,7 @@
                         Approved Products
                     </h3>
                     <div class="card-tools">
-                        <span class="badge bg-success">{{ $products->total() }} Approved</span>
+                        <span class="badge bg-success">{{ $products->count() }} Approved Products</span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -33,7 +78,7 @@
                         </div>
                     @endif
 
-                    @if($products->total() > 0)
+                    @if($products->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
@@ -43,7 +88,8 @@
                                         <th>Category</th>
                                         <th>Price</th>
                                         <th>Brand</th>
-                                        <th>Approved Date</th>
+                                        <th>Status</th>
+                                        <th>Approved</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -52,28 +98,10 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if($product->getMedia('product_images')->count() > 0)
-                                                    @php
-                                                        $media = $product->getMedia('product_images')->first();
-                                                        $imageUrl = $media ? asset('storage/' . $media->getPathRelativeToRoot()) : null;
-                                                    @endphp
-                                                    @if($imageUrl)
-                                                        <img src="{{ $imageUrl }}" 
-                                                             alt="{{ $product->title }}" 
-                                                             class="rounded me-3" 
-                                                             style="width: 50px; height: 50px; object-fit: cover;">
-                                                    @else
-                                                        <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
-                                                             style="width: 50px; height: 50px;">
-                                                            <i class="bi bi-image text-muted"></i>
-                                                        </div>
-                                                    @endif
-                                                @else
-                                                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
-                                                         style="width: 50px; height: 50px;">
-                                                        <i class="bi bi-image text-muted"></i>
-                                                    </div>
-                                                @endif
+                                                <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
                                                 <div>
                                                     <h6 class="mb-0">{{ $product->title }}</h6>
                                                     <small class="text-muted">{{ Str::limit($product->description, 50) }}</small>
@@ -106,18 +134,28 @@
                                         </td>
                                         <td>
                                             @if($product->brand)
-                                                <span class="badge bg-success"> {{ $product->brand }} </span>
+                                                <span class="badge bg-success">{{ $product->brand }}</span>
+                                            @else
+                                                <span class="text-muted">-</span>
                                             @endif
                                         </td>
                                         <td>
-                                            <small>{{ $product->updated_at->diffForHumans() }}</small>
+                                            <span class="badge bg-success">Approved</span>
+                                        </td>
+                                        <td>
+                                            <small>{{ $product->created_at->diffForHumans() }}</small>
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.products.show', $product->id) }}" 
-                                                   class="btn btn-sm btn-outline-primary">
+                                                <a href="#" class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-eye"></i> View
                                                 </a>
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-warning" 
+                                                        onclick="rejectProduct({{ $product->id }})"
+                                                        style="cursor: pointer;">
+                                                    <i class="bi bi-x-lg"></i> Reject
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -127,6 +165,21 @@
                         </div>
                         
                         <!-- Pagination Component -->
+                        <div class="d-flex justify-content-center mt-4">
+                            <nav aria-label="Products pagination">
+                                <ul class="pagination">
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Previous</span>
+                                    </li>
+                                    <li class="page-item active">
+                                        <span class="page-link">1</span>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Next</span>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
 
                     @else
                         <div class="text-center py-5">
@@ -141,9 +194,18 @@
     </div>
 </div>
 
-@endsection
-
 <script>
+function rejectProduct(productId) {
+    console.log('Reject function called for product:', productId);
+    
+    if (confirm('Are you sure you want to reject this approved product?')) {
+        console.log('User confirmed rejection');
+        alert('Product rejected successfully! (Demo mode)');
+    } else {
+        console.log('User cancelled rejection');
+    }
+}
+
 // Auto-hide alerts after 5 seconds
 document.addEventListener('DOMContentLoaded', function() {
     const alerts = document.querySelectorAll('.alert');
@@ -154,4 +216,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 });
-</script> 
+</script>
+
+@endsection 

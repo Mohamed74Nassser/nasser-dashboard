@@ -1,19 +1,65 @@
-@extends('layouts.master')
+@extends('nasser-dashboard::layouts.master')
 
 @section('title', 'Pending Products - Admin Dashboard')
 
 @section('content')
+@php
+// Static data for demonstration
+$products = collect([
+    (object) [
+        'id' => 1,
+        'title' => 'Samsung Galaxy S23 Ultra',
+        'description' => 'Premium Android smartphone with S Pen and 200MP camera',
+        'price' => 1199.99,
+        'status' => 'pending',
+        'brand' => 'Samsung',
+        'is_auction' => false,
+        'created_at' => now()->subDays(2),
+        'user' => (object) ['name' => 'Jane Smith', 'email' => 'jane@example.com'],
+        'category' => (object) ['name' => 'Electronics'],
+        'getMedia' => function() { return collect(); }
+    ],
+    (object) [
+        'id' => 2,
+        'title' => 'Vintage Rolex Submariner',
+        'description' => 'Rare 1960s Rolex Submariner in excellent condition',
+        'price' => 0,
+        'status' => 'pending',
+        'brand' => 'Rolex',
+        'is_auction' => true,
+        'auction' => (object) ['base_price' => 15000],
+        'created_at' => now()->subHours(6),
+        'user' => (object) ['name' => 'David Brown', 'email' => 'david@example.com'],
+        'category' => (object) ['name' => 'Watches'],
+        'getMedia' => function() { return collect(); }
+    ],
+    (object) [
+        'id' => 3,
+        'title' => 'Nike Air Jordan 1 Retro',
+        'description' => 'Classic basketball shoes in Chicago colorway',
+        'price' => 170.00,
+        'status' => 'pending',
+        'brand' => 'Nike',
+        'is_auction' => false,
+        'created_at' => now()->subDays(1),
+        'user' => (object) ['name' => 'Sarah Wilson', 'email' => 'sarah@example.com'],
+        'category' => (object) ['name' => 'Shoes'],
+        'getMedia' => function() { return collect(); }
+    ]
+]);
+@endphp
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        <i class="bi bi-clock-history me-2"></i>
+                        <i class="bi bi-clock me-2"></i>
                         Pending Products
                     </h3>
                     <div class="card-tools">
-                        <span class="badge bg-warning">{{ $products->total() }} Pending</span>
+                        <span class="badge bg-warning">{{ $products->count() }} Pending Products</span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -33,7 +79,7 @@
                         </div>
                     @endif
 
-                    @if($products->total() > 0)
+                    @if($products->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
@@ -43,6 +89,7 @@
                                         <th>Category</th>
                                         <th>Price</th>
                                         <th>Brand</th>
+                                        <th>Status</th>
                                         <th>Posted</th>
                                         <th>Actions</th>
                                     </tr>
@@ -52,28 +99,10 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if($product->getMedia('product_images')->count() > 0)
-                                                    @php
-                                                        $media = $product->getMedia('product_images')->first();
-                                                        $imageUrl = $media ? asset('storage/' . $media->getPathRelativeToRoot()) : null;
-                                                    @endphp
-                                                    @if($imageUrl)
-                                                        <img src="{{ $imageUrl }}" 
-                                                             alt="{{ $product->title }}" 
-                                                             class="rounded me-3" 
-                                                             style="width: 50px; height: 50px; object-fit: cover;">
-                                                    @else
-                                                        <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
-                                                             style="width: 50px; height: 50px;">
-                                                            <i class="bi bi-image text-muted"></i>
-                                                        </div>
-                                                    @endif
-                                                @else
-                                                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
-                                                         style="width: 50px; height: 50px;">
-                                                        <i class="bi bi-image text-muted"></i>
-                                                    </div>
-                                                @endif
+                                                <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
+                                                     style="width: 50px; height: 50px;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
                                                 <div>
                                                     <h6 class="mb-0">{{ $product->title }}</h6>
                                                     <small class="text-muted">{{ Str::limit($product->description, 50) }}</small>
@@ -106,16 +135,20 @@
                                         </td>
                                         <td>
                                             @if($product->brand)
-                                                <span class="badge bg-success"> {{ $product->brand }} </span>
+                                                <span class="badge bg-success">{{ $product->brand }}</span>
+                                            @else
+                                                <span class="text-muted">-</span>
                                             @endif
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning">Pending</span>
                                         </td>
                                         <td>
                                             <small>{{ $product->created_at->diffForHumans() }}</small>
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="{{ route('admin.products.show', $product->id) }}" 
-                                                   class="btn btn-sm btn-outline-primary">
+                                                <a href="#" class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-eye"></i> View
                                                 </a>
                                                 <button type="button" 
@@ -139,10 +172,25 @@
                         </div>
                         
                         <!-- Pagination Component -->
+                        <div class="d-flex justify-content-center mt-4">
+                            <nav aria-label="Products pagination">
+                                <ul class="pagination">
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Previous</span>
+                                    </li>
+                                    <li class="page-item active">
+                                        <span class="page-link">1</span>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Next</span>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
 
                     @else
                         <div class="text-center py-5">
-                            <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+                            <i class="bi bi-clock text-muted" style="font-size: 4rem;"></i>
                             <h4 class="mt-3 text-muted">No Pending Products</h4>
                             <p class="text-muted">All products have been reviewed!</p>
                         </div>
@@ -179,39 +227,13 @@
     </div>
 </div>
 
-@endsection
-
 <script>
-// Test if JavaScript is working
-console.log('JavaScript loaded successfully!');
-
 function approveProduct(productId) {
     console.log('Approve function called for product:', productId);
     
     if (confirm('Are you sure you want to approve this product?')) {
         console.log('User confirmed approval');
-        
-        // Disable the button to prevent double-clicking
-        const button = event.target.closest('button');
-        const originalText = button.innerHTML;
-        button.disabled = true;
-        button.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
-        
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `{{ url('admin/products') }}/${productId}/approve`;
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = '{{ csrf_token() }}';
-        
-        console.log('Form action:', form.action);
-        console.log('CSRF token:', csrfToken.value);
-        
-        form.appendChild(csrfToken);
-        document.body.appendChild(form);
-        form.submit();
+        alert('Product approved successfully! (Demo mode)');
     } else {
         console.log('User cancelled approval');
     }
@@ -221,13 +243,10 @@ function showRejectModal(productId) {
     console.log('Reject modal function called for product:', productId);
     
     const modal = new bootstrap.Modal(document.getElementById('rejectModal'));
-    const form = document.getElementById('rejectForm');
-    form.action = `{{ url('admin/products') }}/${productId}/reject`;
     
     // Clear previous form data
     document.getElementById('rejection_reason').value = '';
     
-    console.log('Modal action set to:', form.action);
     modal.show();
 }
 
@@ -241,4 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     });
 });
-</script> 
+</script>
+
+@endsection 
