@@ -2,10 +2,6 @@
 
 @section('title', 'Analytics & Reports')
 
-
-
-
-
 @section('header-actions')
   <button class="btn btn-success btn-sm me-2">
     <i class="bi bi-download me-1"></i>Export Report
@@ -15,6 +11,7 @@
   </button>
 @endsection
 
+@section('content')
 @php
 // Static analytics data
 $salesData = [
@@ -65,8 +62,6 @@ $topCategories = collect([
 @endphp
 
 <div class="content-wrapper">
-
-
     <section class="content">
         <div class="container-fluid">
             <!-- Key Performance Indicators -->
@@ -360,5 +355,4 @@ $topCategories = collect([
         </div>
     </section>
 </div>
-
 @endsection 
